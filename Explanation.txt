@@ -1,0 +1,14 @@
+Hello,
+     Thank you for reviewing my code. The purpose of this project to build a simple Linux, Nginx, MySQL, and PHP (LEMP) server and display the current time and external IP address.
+I chose to use the default index.html file of the nginx server to place my results. To view the results, simply browse to http://172.17.2.18 after the vagrant box is brought up.
+You can also view the results by inspecting /usr/share/nginx/html/index.html.
+Additionally, I have included a simple bash script to write out to the same index file to fully meet the requirements of the challenge and could have used the script module to run the command. 
+However, I chose to use Ansible modules and variables to display additional skills. 
+
+The versions of VirtualBox and Vagrant that I used in my testing environment are listed below.
+
+Vagrant Version: Vagrant 1.8.5
+VirtualBox Version: 5.0.20r106931
+
+Regards,
+Ben Tennant

@@ -1,0 +1,46 @@
+---
+- hosts: lempServ
+  tasks:
+    - name: Install nginx, PHP5, and MySQL.
+      apt: name={{ item }} update_cache=yes state=latest
+      with_items:
+        - nginx
+        - php5-fpm
+        - php5-mysql
+        - php-apc
+        - php5-imap
+        - php5-mcrypt
+        - php5-curl
+        - php5-gd
+        - php5-json
+        - php-apc
+        - mysql-server
+
+    - name: Fix PHP path info
+      lineinfile: dest=/etc/php5/fpm/php.ini regexp='^(.*)cgi.fix_pathinfo=' line=cgi.fix_pathinfo=0
+      notify:
+        - restart php5-fpm
+        - restart nginx
+        - restart mysql
+    - name: Register Checkip.dyndns.org result
+      uri: url=http://checkip.dyndns.org return_content=yes
+      register: DynDNSOut
+    - name: Register timestamp
+      shell: date +"%Y-%m-%d_%H-%M-%S"
+      register: timeStamp
+    - name: Modify nginx default index.html page
+      replace: dest=/usr/share/nginx/html/index.html regexp='<h1>Welcome to nginx\!</h1>' replace={{ outputStr }}
+  vars:
+    http_port: 80
+    spacer: " | "
+    h1Tag: "<h1>"
+    h1CloseTag: "</h1>"
+    outputStr: "{{ h1Tag }}{{ timeStamp.stdout }}{{ spacer }}{{ DynDNSOut.content }}{{ h1CloseTag }}"
+  handlers:
+    - name: restart php5-fpm
+      service: name=php5-fpm state=restarted
+    - name: restart nginx
+      service: name=nginx state=restarted
+    - name: restart mysql
+      service: name=mysql state=restarted
+
